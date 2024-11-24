@@ -1,0 +1,21 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.logo{
+    width: 7%;
+    height: 1%;
+}
+
+.card-img-top{
+    height:300px;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* .adminimg{
+    width: 100px;
+    object-fit: contain;
+} */
