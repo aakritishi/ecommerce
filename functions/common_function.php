@@ -1,5 +1,5 @@
 <?php
-    include('./includes/connect.php');
+    // include('./includes/connect.php');
 
     // getting products
     function getproducts(){
@@ -26,7 +26,8 @@
                     <div class='card-body'>
                         <h5 class='card-title'>$product_title</h5>
                         <p class='card-text'>$product_description</p>
-                        <a href='#' class='btn btn-primary'>Add to cart</a>
+                        <p class='card-text'>Price: $product_price/-</p>
+                        <a href='index.php?add_to_cart=$product_id' class='btn btn-primary'>Add to cart</a>
                         <a href='#' class='btn btn-primary bg-gradient'>View More</a>
                     </div>
                 </div>
@@ -68,7 +69,8 @@
                         <div class='card-body'>
                             <h5 class='card-title'>$product_title</h5>
                             <p class='card-text'>$product_description</p>
-                            <a href='#' class='btn btn-primary'>Add to cart</a>
+                            <p class='card-text'>Price: $product_price/-</p>
+                            <a href='index.php?add_to_cart=$product_id' class='btn btn-primary'>Add to cart</a>
                             <a href='#' class='btn btn-primary bg-gradient'>View More</a>
                         </div>
                     </div>
@@ -109,7 +111,8 @@
                         <div class='card-body'>
                             <h5 class='card-title'>$product_title</h5>
                             <p class='card-text'>$product_description</p>
-                            <a href='#' class='btn btn-primary'>Add to cart</a>
+                            <p class='card-text'>Price: $product_price/-</p>
+                            <a href='index.php?add_to_cart=$product_id' class='btn btn-primary'>Add to cart</a>
                             <a href='#' class='btn btn-primary bg-gradient'>View More</a>
                         </div>
                     </div>
@@ -182,7 +185,8 @@
                     <div class='card-body'>
                         <h5 class='card-title'>$product_title</h5>
                         <p class='card-text'>$product_description</p>
-                        <a href='#' class='btn btn-primary'>Add to cart</a>
+                        <p class='card-text'>Price: $product_price/-</p>
+                        <a href='index.php?add_to_cart=$product_id' class='btn btn-primary'>Add to cart</a>
                         <a href='#' class='btn btn-primary bg-gradient'>View More</a>
                     </div>
                 </div>
@@ -192,6 +196,7 @@
     }
 }
 
+// display all the products
 function get_all_products(){
     global $con;
 
@@ -216,7 +221,8 @@ function get_all_products(){
                 <div class='card-body'>
                     <h5 class='card-title'>$product_title</h5>
                     <p class='card-text'>$product_description</p>
-                    <a href='#' class='btn btn-primary'>Add to cart</a>
+                    <p class='card-text'>Price: $product_price/-</p>
+                    <a href='index.php?add_to_cart=$product_id' class='btn btn-primary'>Add to cart</a>
                     <a href='#' class='btn btn-primary bg-gradient'>View More</a>
                 </div>
             </div>
@@ -226,4 +232,134 @@ function get_all_products(){
 }
 }
 }
+
+// get user ip address or assign ip address to user
+    function getIPAddress() {  
+        //whether ip is from the share internet  
+        if(!empty($_SERVER['HTTP_CLIENT_IP'])) {  
+                    $ip = $_SERVER['HTTP_CLIENT_IP'];  
+            }  
+        //whether ip is from the proxy  
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {  
+                    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];  
+        }  
+        //whether ip is from the remote address  
+        else{  
+                $ip = $_SERVER['REMOTE_ADDR'];  
+        }  
+        return $ip;  
+    }  
+    // $ip = getIPAddress();  
+    // echo 'User Real IP Address - '.$ip;
+    
+    // cart function
+    function cart(){
+        if (isset($_GET['add_to_cart'])){
+            global $con;
+            $ip = getIPAddress(); 
+            $get_product_id= $_GET['add_to_cart'];
+
+            $select_query= "select * from `cart_details` where ip_address='$ip' and product_id=$get_product_id";
+            $result_query= mysqli_query($con, $select_query);
+            $num_of_rows = mysqli_num_rows($result_query);
+
+            if($num_of_rows>0){
+                echo "<script>alert('This item is already inside the cart')</script>";
+                echo "<script>window.open('index.php','_self')</script>";
+            }
+            else{
+                $insert_query= "insert into `cart_details` (product_id, ip_address, quantity) values ($get_product_id,'$ip',1)";
+                $result_query= mysqli_query($con, $insert_query);
+                echo "<script>alert('This item is added into the cart successfully')</script>";
+                echo "<script>window.open('index.php','_self')</script>";
+            }
+        }
+    }
+
+    // function to get cart item number
+    function cart_item_number(){
+        if (isset($_GET['add_to_cart'])){
+            global $con;
+            $ip = getIPAddress(); 
+
+            $select_query= "select * from `cart_details` where ip_address='$ip'";
+            $result_query= mysqli_query($con, $select_query);
+            $count_cart_items = mysqli_num_rows($result_query);
+        }
+        else{
+            global $con;
+            $ip = getIPAddress(); 
+
+            $select_query= "select * from `cart_details` where ip_address='$ip'";
+            $result_query= mysqli_query($con, $select_query);
+            $count_cart_items = mysqli_num_rows($result_query);
+        }
+        echo $count_cart_items;
+    }
+
+    // function to add the cart item price and sum it and update it 
+    function total_cart_price(){
+        global $con;
+        $ip = getIPAddress();
+        $total=0;
+        $cart_query= "select * from `cart_details` where ip_address='$ip'";
+        $result = mysqli_query($con, $cart_query);
+        while($row=mysqli_fetch_array($result)){
+            $product_id= $row['product_id'];
+            $select_products= "select * from `products` where product_id='$product_id'";
+            $result_products= mysqli_query($con, $select_products);
+            while($row_product_price=mysqli_fetch_array($result_products)){
+                $product_price=array($row_product_price['product_price']);
+                $product_values=array_sum($product_price);
+                $total+=$product_values;
+            }
+        }
+        echo $total;
+    }
+
+    // get users order details 
+    function get_user_order_details() {
+        global $con;
+    
+        // Check if the session username is set
+        if (!isset($_SESSION['username'])) {
+            echo "<h3 class='text-center text-danger'>Please log in to view your orders.</h3>";
+            return;
+        }
+    
+        $username = mysqli_real_escape_string($con, $_SESSION['username']);
+    
+        // Query to get the user ID
+        $get_user_id = "SELECT user_id FROM `user_table` WHERE username = '$username'";
+        $user_result = mysqli_query($con, $get_user_id);
+    
+        if (!$user_result || mysqli_num_rows($user_result) === 0) {
+            echo "<h3 class='text-center text-danger'>User not found.</h3>";
+            return;
+        }
+    
+        $user_row = mysqli_fetch_assoc($user_result);
+        $user_id = $user_row['user_id'];
+    
+        // Query to get pending orders for the user
+        $get_orders = "SELECT COUNT(*) as order_count FROM `user_orders` WHERE user_id = $user_id AND order_status = 'pending'";
+        $order_result = mysqli_query($con, $get_orders);
+    
+        if (!$order_result) {
+            echo "<h3 class='text-center text-danger'>Failed to fetch order details.</h3>";
+            return;
+        }
+    
+        $order_row = mysqli_fetch_assoc($order_result);
+        $order_count = $order_row['order_count'];
+    
+        if ($order_count > 0) {
+            echo "<h3 class='text-center text-dark my-6'>You have <span class='text-danger'>$order_count</span> pending orders</h3>
+            <p class='text-center'>
+                <a href='profile.php?my_orders' class='text-center fw-bold h2'>Order_details</a>";
+        } else {
+            echo "<h3 class='text-center text-dark'>You have no pending orders.</h3>";
+        }
+    }
+    
 ?>

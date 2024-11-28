@@ -1,6 +1,7 @@
 <?php
     include('includes/connect.php');
     include('functions/common_function.php');
+    @session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,17 +32,30 @@
                 <li class="nav-item">
                 <a class="nav-link h4 fw-normal" href="display_products.php">Products</a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link h4" href="/">Register</a>
-                </li>
+                <?php 
+                if(!isset($_SESSION['username'])){
+                    echo"
+                        <li class='nav-item'>
+                            <a class='nav-link h4' href='./user_panel/user_registration.php'>Register</a>
+                        </li>
+                    ";
+                }
+                else{
+                    echo"
+                        <li class='nav-item'>
+                            <a class='nav-link h4' href='./user_panel/profile.php'>My Account</a>
+                        </li>
+                    ";
+                }
+                ?>
                 <li class="nav-item">
                 <a class="nav-link h4" href="/">Contact</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link h4" href="insert_cart.php" name=''><i class="fa fa-shopping-cart" aria-hidden="true"></i><sup>1</sup></a>
+                <a class="nav-link h4" href="cart.php" name=''><i class="fa fa-shopping-cart" aria-hidden="true"></i><sup><?php cart_item_number(); ?></sup></a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link h4" href="/">Total Price:100/-</a>
+                <a class="nav-link h4" href="/">Total Price: <?php total_cart_price();?>/-</a>
                 </li>
             </ul>
             <form class="d-flex" action="search_product.php" method="GET">
@@ -52,16 +66,42 @@
             </div>
         </div>
      </nav>
+    <!-- calling cart function -->
+     
+     <?php
+        cart();
+     ?>
 
     <!-- user name and login section here -->
     <nav class="navbar navbar-extend-lg navbar-dark bg-dark bg-gradient">
         <ul class="navbar-nav me-auto flex-lg-row flex-column gap-lg-3 px-2">
-            <li class="nav-item">
-                <a class="nav-link" href="/">Welcome users</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/">Login</a>
-            </li>
+            <?php 
+                    if(!isset($_SESSION['username'])){
+                        echo"<li class='nav-item'>
+                            <a class='nav-link' href='/'>Welcome users</a>
+                        </li>";
+                    }
+                    else{
+                        echo"
+                        <li class='nav-item'>
+                            <a class='nav-link' href='/'>Welcome ".$_SESSION['username']."</a>
+                        </li>";
+                    }
+                ?>
+            
+            <?php 
+                if(!isset($_SESSION['username'])){
+                    echo"<li class='nav-item'>
+                            <a class='nav-link' href='./user_panel/user_login.php'>Login</a>
+                        </li>";
+                }
+                else{
+                    echo"
+                    <li class='nav-item'>
+                        <a class='nav-link' href='./user_panel/user_logout.php'>Logout</a>
+                    </li>";
+                }
+            ?>
         </ul>
     </nav>
 
@@ -74,13 +114,15 @@
     <div class="row w-[96%] mx-auto px-4">
         <div class="col-md-10">
             <!-- product section -->
-             <div class="row">
+             <div class="row text-black">
                 <!-- fetching and displaying products -->
                  <?php
                     // calling get functions
                     getproducts();
                     get_unique_cat();
                     get_unique_brand();
+                    // $ip = getIPAddress();  
+                    // echo 'User Real IP Address - '.$ip;
                  ?>   
             <!-- row end -->
             </div>
