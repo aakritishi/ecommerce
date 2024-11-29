@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_payment'])) {
     $stmt->bind_param("iids", $order_id, $invoice_number, $amount, $payment_mode);
     if ($stmt->execute()) {
         echo "<script>alert('Payment successfully processed');</script>";
-        echo "<script>window.open('users_orders.php', '_self');</script>";
+        echo "<script>window.open('profile.php', '_self');</script>";
     } else {
         echo "<script>alert('Payment failed. Please try again later.');</script>";
     }

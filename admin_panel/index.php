@@ -1,3 +1,9 @@
+<?php
+    include('../includes/connect.php');
+    include('../functions/common_function.php');
+    session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +20,16 @@
         .adminimg{
             width: 100px;
             object-fit: cover;
+        }
+        .manage-details{
+            overflow-y:hidden;
+        }
+        .edit-products{
+            overflow-y:hidden;
+        }
+        .edit-img{
+            width:100px;
+            object-fit:contain;
         }
     </style>
 </head>
@@ -34,8 +50,8 @@
         </nav>
 
     <!-- another section to show manage details text-->
-        <div class="text-center p-2">
-            <h3>Manage Details</h3>
+        <div class="text-center p-2 my-2">
+            <h3 class="manage-details">Manage Details</h3>
         </div>
 
     <!-- button section for performing crud operation -->
@@ -48,12 +64,12 @@
                 <div class="button text-center m-1">
                     <!-- emmit to display 10 buttons directly => button*10>a.nav-link.tetx-light.bg-primary.bg-gradient.p-2 -->
                     <button class=my-2><a href="insert_products.php" class="nav-link text-light bg-primary bg-gradient p-2">Insert products</a></button>
-                    <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">View Products</a></button>
+                    <button><a href="index.php?view_products" class="nav-link text-light bg-primary bg-gradient p-2">View Products</a></button>
                     <button><a href="index.php?insert_categories" class="nav-link text-light bg-primary bg-gradient p-2">Insert Category</a></button>
-                    <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">View Category</a></button>
+                    <!-- <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">View Category</a></button> -->
                     <button><a href="index.php?insert_brands" class="nav-link text-light bg-primary bg-gradient p-2">Insert Brands</a></button>
-                    <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">View Brands</a></button>
-                    <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">All orders</a></button>
+                    <!-- <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">View Brands</a></button> -->
+                    <button><a href="index.php?all_orders" class="nav-link text-light bg-primary bg-gradient p-2">All orders</a></button>
                     <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">All payments</a></button>
                     <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">List users</a></button>
                     <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">Logout</a></button>
@@ -70,6 +86,18 @@
             }
             if(isset($_GET['insert_brands'])){
                 include('insert_brands.php');
+            }
+            if(isset($_GET['view_products'])){
+                include('view_products.php');
+            }
+            if(isset($_GET['edit_products'])){
+                include('edit_products.php');
+            }
+            if(isset($_GET['delete_products'])){
+                include('delete_products.php');
+            }
+            if(isset($_GET['all_orders'])){
+                include('all_orders.php');
             }
         ?>
      </div>
