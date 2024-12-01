@@ -2,6 +2,11 @@
     include('../includes/connect.php');
     include('../functions/common_function.php');
     session_start();
+
+    if (!isset($_SESSION['admin_username'])) {
+            echo "<script>window.open('admin_login.php','_self')</script>";
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +47,11 @@
                 <nav class="nav-bar navbar-expand-lg">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a href="/" class="nav-link text-white">Welcome Admin</a>
+                        <?php
+                            if (isset($_SESSION['admin_username'])) {
+                                echo "<p class='text-light fw-bold'>" . $_SESSION['admin_username'] . "</p>"; 
+                            }
+                        ?>
                         </li>
                     </ul>
                 </nav>
@@ -50,36 +59,47 @@
         </nav>
 
     <!-- another section to show manage details text-->
-        <div class="text-center p-2 my-2">
+        <!-- <div class="text-center p-2 my-2">
             <h3 class="manage-details">Manage Details</h3>
-        </div>
+        </div> -->
 
     <!-- button section for performing crud operation -->
-        <div class="row d-flex justify-content-between align-items-center">
-            <div class="col-md-12 bg-dark bg-gradient p-3 d-flex mx-auto">
-                <div class="">
-                    <a href=""><img src="../images/uni-t.jpg" alt="" class="adminimg"/></a>
-                    <p class="text-light text-center">AdminName</p>
+        <div class='row d-flex justify-content-between align-items-center'>
+            <div class='col-md-12 bg-dark bg-gradient p-3 d-flex mx-auto'>
+                <div class=''>
+                    <!-- <a href=''><img src='../images/uni-t.jpg' alt='' class='adminimg'/></a> -->
                 </div>
-                <div class="button text-center m-1">
-                    <!-- emmit to display 10 buttons directly => button*10>a.nav-link.tetx-light.bg-primary.bg-gradient.p-2 -->
-                    <button class=my-2><a href="insert_products.php" class="nav-link text-light bg-primary bg-gradient p-2">Insert products</a></button>
-                    <button><a href="index.php?view_products" class="nav-link text-light bg-primary bg-gradient p-2">View Products</a></button>
-                    <button><a href="index.php?insert_categories" class="nav-link text-light bg-primary bg-gradient p-2">Insert Category</a></button>
-                    <!-- <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">View Category</a></button> -->
-                    <button><a href="index.php?insert_brands" class="nav-link text-light bg-primary bg-gradient p-2">Insert Brands</a></button>
-                    <!-- <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">View Brands</a></button> -->
-                    <button><a href="index.php?all_orders" class="nav-link text-light bg-primary bg-gradient p-2">All orders</a></button>
-                    <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">All payments</a></button>
-                    <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">List users</a></button>
-                    <button><a href="" class="nav-link text-light bg-primary bg-gradient p-2">Logout</a></button>
-                </div>
+                <?php
+                    if (isset($_SESSION['admin_username'])) {
+                        // echo "<p class='text-light fw-bold'>" . $_SESSION['admin_username'] . "</p>"; 
+                    } else {
+                        echo "<script>window.open('admin_login.php','_self')</script>";
+                        exit();
+                    }
+                    ?>
+                    <div class='button text-center m-1'>
+                        <button class='my-2'>
+                            <a href='insert_products.php' class='nav-link text-light bg-primary bg-gradient p-2'>Insert Products</a>
+                        </button>
+                        <button>
+                            <a href='index.php?view_products' class='nav-link text-light bg-primary bg-gradient p-2'>View Products</a>
+                        </button>
+                        <button>
+                            <a href='index.php?insert_categories' class='nav-link text-light bg-primary bg-gradient p-2'>Insert Categories</a>
+                        </button>
+                        <button>
+                            <a href='index.php?insert_brands' class='nav-link text-light bg-primary bg-gradient p-2'>Insert Brands</a>
+                        </button>
+                        <button>
+                            <a href='admin_logout.php' class='nav-link text-light bg-primary bg-gradient p-2'>Logout</a>
+                        </button>
+                    </div>
             </div>
         </div>
-     </div>
+     </div>;
 
     <!-- redirection panel -->
-     <div class="container my-4">
+     <div class='container my-4'>
         <?php
             if(isset($_GET['insert_categories'])){
                 include('insert_categories.php');
